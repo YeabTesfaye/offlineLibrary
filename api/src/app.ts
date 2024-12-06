@@ -22,6 +22,7 @@ import teacherRoute from './routes/teacher.route';
 import courseRouter from './routes/course.route';
 import fileUpload from 'express-fileupload';
 import gradeRouter from './routes/grade.route';
+import adminRouter from './routes/admin.route';
 
 app.use(cors());
 app.use(helmet());
@@ -38,10 +39,11 @@ app.use(
     tempFileDir: '/tmp',
   }),
 );
-app.use('/api/v1/studentes', studentRouter);
+app.use('/api/v1/students', studentRouter);
 app.use('/api/v1/teachers', teacherRoute);
 app.use('/api/v1/courses', courseRouter);
 app.use('/api/v1/grades', gradeRouter);
+app.use('/api/v1/admin', adminRouter);
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddlewar);
 const PORT = process.env.PORT || 5000;

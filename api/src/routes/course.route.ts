@@ -6,12 +6,16 @@ import {
   register,
   updateCourse,
 } from '../controller/course.controller';
+import {
+  authenticatedUser,
+  authorizeAdmin,
+} from '../middleware/authentication';
 
 const courseRouter = express.Router();
 
 courseRouter.post('/register', register);
-courseRouter.get('/', getAllCourses);
-courseRouter.get('/:id', getCourseByCourseCode);
-courseRouter.put('/:id', updateCourse);
-courseRouter.delete('/:id', deleteCourse);
+courseRouter.get('/', [authenticatedUser], getAllCourses);
+courseRouter.get('/:id', [authenticatedUser], getCourseByCourseCode);
+courseRouter.put('/:id', [authenticatedUser], authorizeAdmin, updateCourse);
+courseRouter.delete('/:id', [authenticatedUser], authorizeAdmin, deleteCourse);
 export default courseRouter;

@@ -200,6 +200,21 @@ export const getSingleTeacher = async (req: Request, res: Response) => {
   });
 };
 
+// Logout teacher
+
+export const logout = async (_req: Request, res: Response) => {
+  res.cookie('token', 'logout', {
+    httpOnly: true,
+    expires: new Date(0),
+    secure: process.env.NODE_ENV === 'production',
+    signed: true,
+  });
+  res
+    .status(StatusCodes.OK)
+    .json({ msg: 'Teacher has been logged out successfully !!' });
+};
+
+// Delete teacher
 export const deleteTeacher = async (req: Request, res: Response) => {
   const { id } = req.params;
 
@@ -224,4 +239,23 @@ export const deleteTeacher = async (req: Request, res: Response) => {
   });
 
   res.sendStatus(StatusCodes.NO_CONTENT);
+};
+
+// Get all teacher
+export const getAllTeacher = async (req: Request, res: Response) => {
+  const teachers = await prisma.teacher.findMany({});
+
+  if (teachers.length === 0) {
+    res.status(StatusCodes.NOT_FOUND).json({
+      message: 'No Teacher found.',
+    });
+    return;
+  }
+  const teachersWithoutPasswords = teachers.map(
+    ({ password, ...rest }) => rest,
+  );
+
+  res.status(StatusCodes.OK).json({
+    teachers: teachersWithoutPasswords,
+  });
 };

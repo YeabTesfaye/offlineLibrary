@@ -132,12 +132,13 @@ export const updateStudent = async (req: Request, res: Response) => {
   const { password: _, ...studentWithoutPassword } = updatedStudent;
   if (password) {
     const tokenUser = createToken(studentWithoutPassword);
-    attachCookiesToResponse({ res, user: tokenUser }); // Attach the new token to the response cookie
+    attachCookiesToResponse({ res, user: tokenUser });
   }
   res.status(StatusCodes.OK).json({
     msg: 'Student updated successfully',
     student: studentWithoutPassword,
   });
+  return;
 };
 
 export const logout = async (_req: Request, res: Response) => {
@@ -185,20 +186,38 @@ export const getSingleStudent = async (req: Request, res: Response) => {
     where: {
       id,
     },
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      age: true,
+      grade: true,
+      gender: true,
+      role: true,
+    },
   });
   if (!student) {
     res.status(StatusCodes.NOT_FOUND).json({
       message: `Student with student id  ${id} doesn't exist `,
     });
   }
-
   res.status(StatusCodes.OK).json({
     student,
   });
 };
 
 export const getAllStudent = async (req: Request, res: Response) => {
-  const studentes = await prisma.student.findMany({});
+  const studentes = await prisma.student.findMany({
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      age: true,
+      grade: true,
+      gender: true,
+      role: true,
+    },
+  });
 
   if (studentes.length === 0) {
     res.status(StatusCodes.NOT_FOUND).json({
@@ -207,7 +226,6 @@ export const getAllStudent = async (req: Request, res: Response) => {
     return;
   }
   res.status(StatusCodes.OK).json({
-    message: 'Courses retrieved successfully',
     studentes,
   });
 };

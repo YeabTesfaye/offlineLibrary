@@ -8,14 +8,23 @@ import {
   register,
   updateStudent,
 } from '../controller/student.controller';
+import {
+  authenticatedUser,
+  authorizeAdmin,
+} from '../middleware/authentication';
 
 const studentRouter = express.Router();
 
 studentRouter.post('/register', register);
 studentRouter.post('/login', login);
-studentRouter.post('/logout', logout);
-studentRouter.put('/update/:id', updateStudent);
-studentRouter.delete('/delete/:id', deleteStudent);
-studentRouter.get('/:id', getSingleStudent);
-studentRouter.get('/', getAllStudent);
+studentRouter.post('/logout', authenticatedUser, logout);
+studentRouter.put('/:id', [authenticatedUser], authorizeAdmin, updateStudent);
+studentRouter.delete(
+  '/:id',
+  [authenticatedUser],
+  authorizeAdmin,
+  deleteStudent,
+);
+studentRouter.get('/:id', [authenticatedUser], getSingleStudent);
+studentRouter.get('/', [authenticatedUser], getAllStudent);
 export default studentRouter;

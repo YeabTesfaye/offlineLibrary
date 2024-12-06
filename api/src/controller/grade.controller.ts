@@ -114,3 +114,16 @@ export const deleteGrade = async (req: Request, res: Response) => {
   });
   res.sendStatus(StatusCodes.NO_CONTENT);
 };
+
+export const getAllGrades = async (req: Request, res: Response) => {
+  const grades = await prisma.grade.findMany({});
+
+  if (grades.length === 0) {
+    res.status(StatusCodes.NOT_FOUND).json({
+      message: 'No Grade found.',
+    });
+  }
+  res.status(StatusCodes.OK).json({
+    grades,
+  });
+};
